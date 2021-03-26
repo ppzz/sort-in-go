@@ -1,4 +1,4 @@
-package int_gen
+package RandGen
 
 import (
     "math/rand"
