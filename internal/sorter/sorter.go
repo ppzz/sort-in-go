@@ -1,9 +1,5 @@
 package sorter
 
-import (
-	Checker "github.com/ppzz/sorting-go/internal/checker"
-)
-
 type SortItem struct {
 	Seq int
 	Val int
@@ -32,7 +28,7 @@ func (s *Sorter) BubbleSort(isASC bool) {
 	for i := 0; i < len(s.items); i++ {
 		for j := i + 1; j < len(s.items); j++ {
 			if isASC && s.items[i].great(&s.items[j]) || !isASC && s.items[j].great(&s.items[i]) {
-				var t SortItem = s.items[i]
+				var t = s.items[i]
 				s.items[i] = s.items[j]
 				s.items[j] = t
 			}
@@ -41,7 +37,7 @@ func (s *Sorter) BubbleSort(isASC bool) {
 }
 
 func (s *Sorter) check() (bool, bool) {
-	c := Checker.NewChecker()
+	c := NewChecker()
 	isOrdered := true
 	for _, sortItem := range s.items {
 		if !c.IsOrdered(sortItem.Val) {

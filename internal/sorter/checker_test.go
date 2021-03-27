@@ -1,4 +1,4 @@
-package Checker
+package sorter
 
 import "testing"
 

@@ -1,4 +1,4 @@
-package Checker
+package sorter
 
 type Checker struct {
 	lastVal int
@@ -33,4 +33,8 @@ func (c *Checker) setIsAsc(item int) {
 
 func (c *Checker) GetIsAsc() bool {
 	return c.asc
+}
+
+func (c *Checker) GetCount() int {
+	return c.counter
 }
