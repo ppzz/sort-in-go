@@ -24,6 +24,12 @@ type Sorter struct {
 	items []SortItem
 }
 
+func NewSorter(items []SortItem) *Sorter {
+	s := new(Sorter)
+	s.items = items
+	return s
+}
+
 func (s *Sorter) BubbleSort(isASC bool) {
 	for i := 0; i < len(s.items); i++ {
 		for j := i + 1; j < len(s.items); j++ {
@@ -46,4 +52,8 @@ func (s *Sorter) check() (bool, bool) {
 		}
 	}
 	return isOrdered, c.GetIsAsc()
+}
+
+func (s *Sorter) GetItems() []SortItem {
+	return s.items
 }
