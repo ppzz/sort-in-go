@@ -3,94 +3,45 @@ package Checker
 import "testing"
 
 func TestChecker_IsOrdered(t *testing.T) {
-    type fields struct {
-        lastVal int
-        asc     bool
-    }
-    type args struct {
-        item int
-    }
-    tests := []struct {
+    testCases := []struct {
         name   string
-        fields fields
-        args   args
-        want   bool
+        items  []int
+        wanted []bool
     }{
         {
-            name: "asc, last 100, next: 100",
-            fields: fields{
-                lastVal: 100,
-                asc:     true,
-            },
-            args: args{
-                item: 100,
-            },
-            want: true,
+            name:   "case1: 连续多个item相等",
+            items:  []int{1, 1, 2, 3, 4},
+            wanted: []bool{true, true, true, true, true,},
         },
         {
-            name: "desc, last 100, next: 100",
-            fields: fields{
-                lastVal: 100,
-                asc:     false,
-            },
-            args: args{
-                item: 100,
-            },
-            want: true,
+            name:   "case2: asc,ordered",
+            items:  []int{1, 2, 2, 3, 4},
+            wanted: []bool{true, true, true, true, true,},
         },
         {
-            name: "asc, last 100, next: 99",
-            fields: fields{
-                lastVal: 100,
-                asc:     true,
-            },
-            args: args{
-                item: 99,
-            },
-            want: false,
+            name:   "case3: asc, not ordered",
+            items:  []int{1, 2, 6, 5, 6},
+            wanted: []bool{true, true, true, false, true,},
         },
         {
-            name: "asc, last 100, next: 101",
-            fields: fields{
-                lastVal: 100,
-                asc:     true,
-            },
-            args: args{
-                item: 101,
-            },
-            want: true,
+            name:   "case4: desc, ordered",
+            items:  []int{6, 6, 6, 4, 3},
+            wanted: []bool{true, true, true, true, true,},
         },
         {
-            name: "desc, last 100, next: 99",
-            fields: fields{
-                lastVal: 100,
-                asc:     false,
-            },
-            args: args{
-                item: 99,
-            },
-            want: true,
-        },
-        {
-            name: "desc, last 100, next: 101",
-            fields: fields{
-                lastVal: 100,
-                asc:     false,
-            },
-            args: args{
-                item: 101,
-            },
-            want: false,
+            name:   "case5:desc,not_ordered",
+            items:  []int{6, 6, 5, 3, 4, 3},
+            wanted: []bool{true, true, true, true, false, true,},
         },
     }
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            c := &Checker{
-                lastVal: tt.fields.lastVal,
-                asc:     tt.fields.asc,
-            }
-            if got := c.IsOrdered(tt.args.item); got != tt.want {
-                t.Errorf("IsOrdered() = %v, want %v", got, tt.want)
+    for _, testCase := range testCases {
+        t.Run(testCase.name, func(t *testing.T) {
+            checker := NewChecker()
+            for i := range testCase.items {
+                got := checker.IsOrdered(testCase.items[i])
+                if got != testCase.wanted[i] {
+                    t.Errorf("IsOrdered() = %v, want %v, i = %d", got, testCase.wanted[i], i)
+                }
             }
         })
     }
