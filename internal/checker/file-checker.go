@@ -13,13 +13,13 @@ type FileChecker struct {
     path string
 }
 
-func NewFileChecker(p string) *FileChecker {
+func NewFileChecker(filename string) *FileChecker {
     fc := new(FileChecker)
-    fc.path = p
+    fc.path = filename
     return fc
 }
 
-func (fc *FileChecker) check() bool {
+func (fc *FileChecker) Check() bool {
     file, err := os.Open(fc.path)
     util.NoError(err)
     defer file.Close()

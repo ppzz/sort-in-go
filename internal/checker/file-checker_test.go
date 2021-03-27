@@ -103,8 +103,8 @@ func TestFileChecker_check(t *testing.T) {
     for _, testCase := range testCases {
         t.Run(testCase.name, func(t *testing.T) {
             fc := NewFileChecker(testCase.path)
-            if got := fc.check(); got != testCase.want {
-                t.Errorf("check() = %v, want %v", got, testCase.want)
+            if got := fc.Check(); got != testCase.want {
+                t.Errorf("Check() = %v, want %v", got, testCase.want)
             }
         })
     }
