@@ -44,7 +44,7 @@ func (fc *FileChecker) Check() (bool, int) {
 		if err == io.EOF { // 文件尾
 			break
 		}
-		log.Fatal("dead loop: should nor reach this code", )
+		log.Fatal("dead loop: should nor reach this code")
 	}
 	return result, fc.checker.counter
 }
