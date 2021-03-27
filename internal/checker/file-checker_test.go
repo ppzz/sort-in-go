@@ -70,41 +70,47 @@ func Test_readline(t *testing.T) {
 
 func TestFileChecker_check(t *testing.T) {
     testCases := []struct {
-        name string
-        path string
-        want bool
+        name        string
+        path        string
+        want        bool
+        wantedCount int
     }{
         {
-            name: "case1: 空文件",
-            path: "./testdata/int-0-asc.txt",
-            want: true,
+            name:        "case1: 空文件",
+            path:        "./testdata/int-0-asc.txt",
+            want:        true,
+            wantedCount: 0,
         },
         {
-            name: "case2:3items,asc",
-            path: "./testdata/int-3-asc.txt",
-            want: true,
+            name:        "case2:3items,asc",
+            path:        "./testdata/int-3-asc.txt",
+            want:        true,
+            wantedCount: 3,
         },
         {
-            name: "case3:3items,desc",
-            path: "./testdata/int-3-desc.txt",
-            want: true,
+            name:        "case3:3items,desc",
+            path:        "./testdata/int-3-desc.txt",
+            want:        true,
+            wantedCount: 3,
         },
         {
-            name: "case4:3items,desc,false",
-            path: "./testdata/int-3-desc-false.txt",
-            want: false,
+            name:        "case4:4items,desc,false",
+            path:        "./testdata/int-4-asc-false.txt",
+            want:        false,
+            wantedCount: 3,
         },
         {
-            name: "case5:3items,desc,false",
-            path: "./testdata/int-3-desc-false.txt",
-            want: false,
+            name:        "case5:5items,desc,false",
+            path:        "./testdata/int-5-desc-false.txt",
+            want:        false,
+            wantedCount: 4,
         },
     }
     for _, testCase := range testCases {
         t.Run(testCase.name, func(t *testing.T) {
             fc := NewFileChecker(testCase.path)
-            if got := fc.Check(); got != testCase.want {
-                t.Errorf("Check() = %v, want %v", got, testCase.want)
+            if got, count := fc.Check(); got != testCase.want || count != testCase.wantedCount {
+                t.Errorf("Check() = %v, count= %d, want %v, wantedCount: %d", got, count, testCase.want, testCase.wantedCount)
             }
         })
     }

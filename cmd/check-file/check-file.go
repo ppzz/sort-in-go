@@ -12,6 +12,6 @@ func main() {
     filename := "int-" + strconv.Itoa(100) + ".txt"
     absPath := path.Join(assetRoot, filename)
     fc := Checker.NewFileChecker(absPath)
-    result := fc.Check()
-    fmt.Printf("file:%s, odered stats: %v\n", absPath, result)
+    result, count := fc.Check()
+    fmt.Printf("file: %s, odered stats: %v, sorted numbers: %d\n", absPath, result, count)
 }

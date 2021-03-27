@@ -10,21 +10,21 @@ import (
 )
 
 type FileChecker struct {
-    path string
+    path    string
+    checker *Checker
 }
 
 func NewFileChecker(filename string) *FileChecker {
     fc := new(FileChecker)
     fc.path = filename
+    fc.checker = NewChecker()
     return fc
 }
 
-func (fc *FileChecker) Check() bool {
+func (fc *FileChecker) Check() (bool, int) {
     file, err := os.Open(fc.path)
     util.NoError(err)
     defer file.Close()
-
-    checker := NewChecker()
     result := true
 
     for {
@@ -32,7 +32,7 @@ func (fc *FileChecker) Check() bool {
         if n > 0 { // 非空行
             arr := strings.Split(string(line), ",")
             val, _ := strconv.Atoi(arr[1])
-            if !checker.IsOrdered(val) {
+            if !fc.checker.IsOrdered(val) {
                 result = false
                 break
             }
@@ -46,7 +46,7 @@ func (fc *FileChecker) Check() bool {
         }
         log.Fatal("dead loop: should nor reach this code", )
     }
-    return result
+    return result, fc.checker.counter
 }
 
 func readline(reader io.Reader) (count int, line []byte, err error) {
