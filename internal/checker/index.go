@@ -25,8 +25,12 @@ func (c *Checker) IsOrdered(item int) bool {
 	return r
 }
 
-func (c *Checker) setAsc(item int) {
+func (c *Checker) setIsAsc(item int) {
 	if item > c.lastVal {
 		c.asc = true
 	}
+}
+
+func (c *Checker) GetIsAsc() bool {
+	return c.asc
 }

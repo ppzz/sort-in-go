@@ -115,3 +115,29 @@ func TestFileChecker_check(t *testing.T) {
 		})
 	}
 }
+
+// func TestFileChecker_LoadToList(t *testing.T) {
+// 	tests := []struct {
+// 		name     string
+// 		filename string
+// 		want     []sorter.SortItem
+// 	}{
+// 		{
+// 			name:     "case1: int-3-asc.txt",
+// 			filename: "./testdata/int-3-asc.txt",
+// 			want: []sorter.SortItem{
+// 				{Seq: 1, Val: 14},
+// 				{Seq: 2, Val: 27},
+// 				{Seq: 3, Val: 29},
+// 			},
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			fc := NewFileChecker(tt.filename)
+// 			if got := fc.LoadToList(); !reflect.DeepEqual(got, tt.want) {
+// 				t.Errorf("LoadToList() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }

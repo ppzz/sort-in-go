@@ -49,6 +49,34 @@ func (fc *FileChecker) Check() (bool, int) {
 	return result, fc.checker.counter
 }
 
+// func (fc *FileChecker) LoadToList() []sorter.SortItem {
+// 	file, err := os.Open(fc.path)
+// 	util.NoError(err)
+// 	defer file.Close()
+//
+// 	items := make([]sorter.SortItem, 0)
+// 	for {
+// 		n, line, err := readline(file)
+// 		if n > 0 { // 非空行
+// 			arr := strings.Split(string(line), ",")
+// 			seq, _ := strconv.Atoi(arr[1])
+// 			val, _ := strconv.Atoi(arr[1])
+// 			item := new(sorter.SortItem)
+// 			item.Seq, item.Val = seq, val
+// 			items = append(items, *item)
+// 			continue
+// 		}
+// 		if n == 0 && err == nil { // 空行
+// 			continue
+// 		}
+// 		if err == io.EOF { // 文件尾
+// 			break
+// 		}
+// 		log.Fatal("dead loop: should nor reach this code")
+// 	}
+// 	return items
+// }
+
 func readline(reader io.Reader) (count int, line []byte, err error) {
 	line = make([]byte, 0)
 	for {

@@ -3,6 +3,7 @@ package RandGen
 import (
 	"bytes"
 	"encoding/binary"
+	"github.com/ppzz/sorting-go/internal/sorter"
 	"github.com/ppzz/sorting-go/internal/util"
 	"log"
 	"os"
@@ -46,6 +47,24 @@ func (fg *FileGen) GenVisible(count int) string {
 		b := []byte(str)
 		n, err := file.Write(b)
 		util.NoError(err)
+		if n != len(b) {
+			log.Fatal("error: 写入失败: n != len(strBytes) ")
+		}
+	}
+	return fg.path
+}
+
+func (fg *FileGen) GenVisibleFromList(items []sorter.SortItem) string {
+	file, err := os.Create(fg.path)
+	util.NoError(err)
+	defer file.Close()
+
+	for _, item := range items {
+		str := strconv.Itoa(item.Seq) + "," + strconv.Itoa(item.Val) + "\n"
+		b := []byte(str)
+		n, err := file.Write(b)
+		util.NoError(err)
+
 		if n != len(b) {
 			log.Fatal("error: 写入失败: n != len(strBytes) ")
 		}
