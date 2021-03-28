@@ -24,11 +24,19 @@ var sortItems2 = []SortItem{
 	{Seq: 5, Val: 32},
 }
 
+var sortItems3 = []SortItem{
+	{Seq: 1, Val: 2222},
+	{Seq: 2, Val: 333333},
+	{Seq: 3, Val: 11},
+}
+
 func TestSorter_BubbleSort(t *testing.T) {
 	items1 := make([]SortItem, len(sortItems1))
 	items2 := make([]SortItem, len(sortItems2))
+	items3 := make([]SortItem, len(sortItems3))
 	copy(items1, sortItems1)
 	copy(items2, sortItems2)
+	copy(items3, sortItems3)
 
 	testCases := []struct {
 		name           string
@@ -49,6 +57,12 @@ func TestSorter_BubbleSort(t *testing.T) {
 			wantedIsSorted: true,
 			wantedIsASC:    true,
 		},
+		{
+			name:           "case3:",
+			list:           items3,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
@@ -56,7 +70,7 @@ func TestSorter_BubbleSort(t *testing.T) {
 				items: testCase.list,
 			}
 			s.BubbleSort(testCase.wantedIsASC)
-			gotIsSorted, gotIsASC := s.check()
+			gotIsSorted, gotIsASC := s.Check()
 			if !gotIsSorted {
 				t.Errorf("BubbleSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
 			}
@@ -99,7 +113,7 @@ func TestSorter_InsertionSort(t *testing.T) {
 				items: testCase.list,
 			}
 			s.InsertionSort(testCase.wantedIsASC)
-			gotIsSorted, gotIsASC := s.check()
+			gotIsSorted, gotIsASC := s.Check()
 			if !gotIsSorted {
 				t.Errorf("InsertionSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
 			}
@@ -171,12 +185,12 @@ func TestSorter_check(t *testing.T) {
 			s := &Sorter{
 				items: tt.items,
 			}
-			gotIsOrdered, gotIsASC := s.check()
+			gotIsOrdered, gotIsASC := s.Check()
 			if gotIsOrdered != tt.wantIsOrdered {
-				t.Errorf("check() gotIsOrdered = %v, wantIsOrdered %v", gotIsOrdered, tt.wantIsOrdered)
+				t.Errorf("Check() gotIsOrdered = %v, wantIsOrdered %v", gotIsOrdered, tt.wantIsOrdered)
 			}
 			if gotIsASC != tt.wantIsAsc {
-				t.Errorf("check() gotIsASC = %v, wantIsAsc %v", gotIsASC, tt.wantIsAsc)
+				t.Errorf("Check() gotIsASC = %v, wantIsAsc %v", gotIsASC, tt.wantIsAsc)
 			}
 		})
 	}

@@ -75,9 +75,9 @@ func (s *Sorter) InsertionSort(isASC bool) {
 	}
 }
 
-func (s *Sorter) check() (bool, bool) {
+func (s *Sorter) Check() (isOrdered bool, isASC bool) {
 	c := NewChecker()
-	isOrdered := true
+	isOrdered = true
 	for _, sortItem := range s.items {
 		if !c.IsOrdered(sortItem.Val) {
 			isOrdered = false
