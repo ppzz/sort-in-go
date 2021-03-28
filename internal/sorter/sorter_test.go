@@ -2,6 +2,19 @@ package sorter
 
 import "testing"
 
+var unorderedItems = []SortItem{
+	{Seq: 1, Val: 7377893500238068435},
+	{Seq: 2, Val: 3870084184907221662},
+	{Seq: 3, Val: 5816097024187652061},
+	{Seq: 4, Val: 9079073840597114598},
+	{Seq: 5, Val: 3209982839515082167},
+	{Seq: 6, Val: 955314993070246892},
+	{Seq: 7, Val: 8579404511464342498},
+	{Seq: 8, Val: 8885012081506670610},
+	{Seq: 9, Val: 5351312676265698788},
+	{Seq: 10, Val: 5351312676265698789},
+}
+
 func TestSorter_BubbleSort(t *testing.T) {
 	tests := []struct {
 		name           string
@@ -11,19 +24,8 @@ func TestSorter_BubbleSort(t *testing.T) {
 		wantedIsASC    bool
 	}{
 		{
-			name: "case1:",
-			list: []SortItem{
-				{Seq: 1, Val: 7377893500238068435},
-				{Seq: 2, Val: 3870084184907221662},
-				{Seq: 3, Val: 5816097024187652061},
-				{Seq: 4, Val: 9079073840597114598},
-				{Seq: 5, Val: 3209982839515082167},
-				{Seq: 6, Val: 955314993070246892},
-				{Seq: 7, Val: 8579404511464342498},
-				{Seq: 8, Val: 8885012081506670610},
-				{Seq: 9, Val: 5351312676265698788},
-				{Seq: 10, Val: 5351312676265698789},
-			},
+			name:           "case1:",
+			list:           unorderedItems,
 			wantedIsSorted: true,
 			wantedIsASC:    true,
 		},
@@ -112,6 +114,83 @@ func TestSorter_check(t *testing.T) {
 			}
 			if gotIsASC != tt.wantIsAsc {
 				t.Errorf("check() gotIsASC = %v, wantIsAsc %v", gotIsASC, tt.wantIsAsc)
+			}
+		})
+	}
+}
+
+func TestSorter_shouldSwap(t *testing.T) {
+	type args struct {
+		isASC bool
+		item1 SortItem
+		item2 SortItem
+	}
+	testCases := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "case1: asc, 12, 12",
+			args: args{
+				isASC: true,
+				item1: SortItem{Seq: 1, Val: 12},
+				item2: SortItem{Seq: 2, Val: 12},
+			},
+			want: false,
+		},
+		{
+			name: "case2: desc, 12, 12",
+			args: args{
+				isASC: false,
+				item1: SortItem{Seq: 1, Val: 12},
+				item2: SortItem{Seq: 2, Val: 12},
+			},
+			want: false,
+		},
+		{
+			name: "case3: asc, 12, 18",
+			args: args{
+				isASC: true,
+				item1: SortItem{Seq: 1, Val: 12},
+				item2: SortItem{Seq: 2, Val: 18},
+			},
+			want: false,
+		},
+		{
+			name: "case4: asc, 18, 12",
+			args: args{
+				isASC: true,
+				item1: SortItem{Seq: 1, Val: 18},
+				item2: SortItem{Seq: 2, Val: 12},
+			},
+			want: true,
+		},
+		{
+			name: "case5: desc, 12, 18",
+			args: args{
+				isASC: false,
+				item1: SortItem{Seq: 1, Val: 12},
+				item2: SortItem{Seq: 2, Val: 18},
+			},
+			want: true,
+		},
+		{
+			name: "case6: desc, 18, 12",
+			args: args{
+				isASC: false,
+				item1: SortItem{Seq: 1, Val: 18},
+				item2: SortItem{Seq: 2, Val: 12},
+			},
+			want: false,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := NewSorter([]SortItem{})
+			got := s.shouldSwap(testCase.args.isASC, testCase.args.item1, testCase.args.item2)
+			if got != testCase.want {
+				t.Errorf("shouldSwap() = %v, want %v", got, testCase.want)
 			}
 		})
 	}
