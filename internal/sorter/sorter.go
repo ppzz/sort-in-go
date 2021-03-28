@@ -49,19 +49,27 @@ func (s *Sorter) shouldSwap(isASC bool, item1 SortItem, item2 SortItem) bool {
 
 // 插入排序
 func (s *Sorter) InsertionSort(isASC bool) {
-	for i := 0; i < len(s.items); i++ {
+	for i := 1; i < len(s.items); i++ {
 		for j := i - 1; j >= 0; j-- {
 			shouldSwap := s.shouldSwap(isASC, s.items[j], s.items[i])
-			if shouldSwap {
-				j--
+			if shouldSwap && j != 0 {
 				continue
 			}
-			if !shouldSwap && j == i-1 {
-				break
+
+			var index int
+			if shouldSwap && j == 0 {
+				index = 0
 			}
-			var t = s.items[i]
-			s.items[i] = s.items[j]
-			s.items[j] = t
+
+			if !shouldSwap {
+				index = j + 1
+			}
+
+			t := s.items[i]
+			for k := i; k > index; k-- {
+				s.items[k] = s.items[k-1]
+			}
+			s.items[index] = t
 			break
 		}
 	}

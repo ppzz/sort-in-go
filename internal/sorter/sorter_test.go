@@ -1,8 +1,10 @@
 package sorter
 
-import "testing"
+import (
+	"testing"
+)
 
-var unorderedItems = []SortItem{
+var sortItems1 = []SortItem{
 	{Seq: 1, Val: 7377893500238068435},
 	{Seq: 2, Val: 3870084184907221662},
 	{Seq: 3, Val: 5816097024187652061},
@@ -14,9 +16,21 @@ var unorderedItems = []SortItem{
 	{Seq: 9, Val: 5351312676265698788},
 	{Seq: 10, Val: 5351312676265698789},
 }
+var sortItems2 = []SortItem{
+	{Seq: 1, Val: 73},
+	{Seq: 2, Val: 38},
+	{Seq: 3, Val: 58},
+	{Seq: 4, Val: 90},
+	{Seq: 5, Val: 32},
+}
 
 func TestSorter_BubbleSort(t *testing.T) {
-	tests := []struct {
+	items1 := make([]SortItem, len(sortItems1))
+	items2 := make([]SortItem, len(sortItems2))
+	copy(items1, sortItems1)
+	copy(items2, sortItems2)
+
+	testCases := []struct {
 		name           string
 		list           []SortItem
 		want           bool
@@ -25,23 +39,72 @@ func TestSorter_BubbleSort(t *testing.T) {
 	}{
 		{
 			name:           "case1:",
-			list:           unorderedItems,
+			list:           items1,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+		{
+			name:           "case2:",
+			list:           items2,
 			wantedIsSorted: true,
 			wantedIsASC:    true,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
 			s := &Sorter{
-				items: tt.list,
+				items: testCase.list,
 			}
-			s.BubbleSort(tt.wantedIsASC)
+			s.BubbleSort(testCase.wantedIsASC)
 			gotIsSorted, gotIsASC := s.check()
 			if !gotIsSorted {
-				t.Errorf("BubbleSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, tt.wantedIsSorted)
+				t.Errorf("BubbleSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
 			}
-			if gotIsASC != tt.wantedIsASC {
-				t.Errorf("BubbleSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, tt.wantedIsASC)
+			if gotIsASC != testCase.wantedIsASC {
+				t.Errorf("BubbleSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+			}
+		})
+	}
+}
+
+func TestSorter_InsertionSort(t *testing.T) {
+	items1 := make([]SortItem, len(sortItems1))
+	items2 := make([]SortItem, len(sortItems2))
+	copy(items1, sortItems1)
+	copy(items2, sortItems2)
+
+	testCases := []struct {
+		name           string
+		list           []SortItem
+		want           bool
+		wantedIsSorted bool
+		wantedIsASC    bool
+	}{
+		{
+			name:           "case1:",
+			list:           items1,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+		{
+			name:           "case2: itemsSimple",
+			list:           items2,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := &Sorter{
+				items: testCase.list,
+			}
+			s.InsertionSort(testCase.wantedIsASC)
+			gotIsSorted, gotIsASC := s.check()
+			if !gotIsSorted {
+				t.Errorf("InsertionSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+			}
+			if gotIsASC != testCase.wantedIsASC {
+				t.Errorf("InsertionSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
 			}
 		})
 	}
