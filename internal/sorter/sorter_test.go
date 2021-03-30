@@ -163,10 +163,53 @@ func TestSorter_ShellSort(t *testing.T) {
 			s.ShellSort(testCase.wantedIsASC)
 			gotIsSorted, gotIsASC := s.Check()
 			if !gotIsSorted {
-				t.Errorf("InsertionSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+				t.Errorf("ShellSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
 			}
 			if gotIsASC != testCase.wantedIsASC {
-				t.Errorf("InsertionSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+				t.Errorf("ShellSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+			}
+		})
+	}
+}
+
+func TestSorter_SelectionSort(t *testing.T) {
+	items1 := make([]SortItem, len(sortItems1))
+	items2 := make([]SortItem, len(sortItems2))
+	copy(items1, sortItems1)
+	copy(items2, sortItems2)
+
+	testCases := []struct {
+		name           string
+		list           []SortItem
+		want           bool
+		wantedIsSorted bool
+		wantedIsASC    bool
+	}{
+		{
+			name:           "case1:",
+			list:           items1,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+		{
+			name:           "case2: itemsSimple",
+			list:           items2,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := &Sorter{
+				items: testCase.list,
+			}
+			s.SelectionSort(testCase.wantedIsASC)
+			gotIsSorted, gotIsASC := s.Check()
+			if !gotIsSorted {
+				t.Errorf("SelectionSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+			}
+			if gotIsASC != testCase.wantedIsASC {
+				t.Errorf("SelectionSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
 			}
 		})
 	}

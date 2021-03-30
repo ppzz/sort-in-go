@@ -114,3 +114,19 @@ func (s *Sorter) printItems() string {
 	}
 	return str
 }
+
+func (s *Sorter) SelectionSort(isASC bool) {
+	count := len(s.items)
+	for outIndex := 0; outIndex < count; outIndex++ {
+		currentMinIndex := outIndex
+		for internalIndex := outIndex + 1; internalIndex < count; internalIndex++ {
+			shouldSwap := s.shouldSwap(isASC, s.items[currentMinIndex], s.items[internalIndex])
+			if shouldSwap {
+				currentMinIndex = internalIndex
+			}
+		}
+		temp := s.items[currentMinIndex]
+		s.items[currentMinIndex] = s.items[outIndex]
+		s.items[outIndex] = temp
+	}
+}
