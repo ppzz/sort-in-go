@@ -50,12 +50,13 @@ func (fc *FileChecker) Check() (bool, int) {
 	return result, fc.checker.GetCount()
 }
 
-func (fc *FileChecker) LoadToList() []sorter.SortItem {
+func (fc *FileChecker) LoadToList(count int) []sorter.SortItem {
 	file, err := os.Open(fc.path)
 	util.NoError(err)
 	defer file.Close()
 
-	items := make([]sorter.SortItem, 0)
+	items := make([]sorter.SortItem, count)
+	i := 0
 	for {
 		n, line, err := readline(file)
 		if n > 0 { // 非空行
@@ -64,7 +65,8 @@ func (fc *FileChecker) LoadToList() []sorter.SortItem {
 			val, _ := strconv.Atoi(arr[1])
 			item := new(sorter.SortItem)
 			item.Seq, item.Val = seq, val
-			items = append(items, *item)
+			items[i] = *item
+			i++
 			continue
 		}
 		if n == 0 && err == nil { // 空行

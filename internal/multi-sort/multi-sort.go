@@ -3,12 +3,12 @@ package multi_sort
 import (
 	"fmt"
 	Checker "github.com/ppzz/sorting-go/internal/checker"
+	RandGen "github.com/ppzz/sorting-go/internal/rand-gen"
 	"github.com/ppzz/sorting-go/internal/sorter"
 	"github.com/ppzz/sorting-go/internal/util"
 	"github.com/spf13/viper"
 	"log"
 	"path"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -23,15 +23,11 @@ func MultiSort() {
 
 	// 准备一些变量
 	NumCount := viper.GetInt("randomFile.numCount")
-	AssetRoot := viper.GetString("assetRoot")
-	filename := fmt.Sprintf("int-%s.txt", strconv.Itoa(NumCount))
-	absFilename := path.Join(AssetRoot, filename) // 文件名
 	// nameList := []string{"bubble", "insertion", "shell", "quick"} // 现有的算法列表
 	nameList := []string{"shell", "quick", "merge"} // 现有的算法列表
 	ch := make(chan ResultInfo, len(nameList))      // 用于 goroutine 返回结果
 
-	// 读入文件
-	items := getList(absFilename)
+	items := genItems(NumCount)
 	itemsList := cloneList(items, len(nameList)) // 克隆多份给goroutine使用
 
 	// 启动协程，等待所有的协程完成工作
@@ -49,6 +45,20 @@ func MultiSort() {
 	}
 }
 
+func genItems(count int) []sorter.SortItem {
+	start := time.Now().UnixNano() / 1000000
+
+	s := make([]sorter.SortItem, count)
+	rg := RandGen.NewIntGen(time.Now().UnixNano())
+	for i := 0; i < count; i++ {
+		s[i] = sorter.SortItem{Seq: i, Val: rg.Gen()}
+	}
+
+	end := time.Now().UnixNano() / 1000000
+	fmt.Printf("gen sortItem list: %d use time: %d ms\n", count, end-start)
+	return s
+}
+
 func startOneSort(name string, items []sorter.SortItem, isASC bool, ch chan ResultInfo, wg *sync.WaitGroup) {
 	start := time.Now().UnixNano()
 	s := sorter.NewSorter(items)
@@ -62,6 +72,8 @@ func startOneSort(name string, items []sorter.SortItem, isASC bool, ch chan Resu
 		s.ShellSort(isASC)
 	case "quick":
 		s.QuickSort(isASC)
+	case "merge":
+		s.MergeSort(isASC)
 	default:
 		log.Fatal("name not found:", name)
 	}
@@ -86,12 +98,13 @@ func cloneList(items []sorter.SortItem, count int) [][]sorter.SortItem {
 	return list
 }
 
-func getList(filename string) []sorter.SortItem {
+// 读入文件
+func getList(filename string, count int) []sorter.SortItem {
 
 	start := time.Now().UnixNano() / 1000000
 
 	fc := Checker.NewFileChecker(filename)
-	items := fc.LoadToList()
+	items := fc.LoadToList(count)
 
 	end := time.Now().UnixNano() / 1000000
 	fmt.Printf("%s:, load file use time: %d ms\n", path.Base(filename), end-start)

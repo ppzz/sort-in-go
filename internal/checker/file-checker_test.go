@@ -136,7 +136,7 @@ func TestFileChecker_LoadToList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fc := NewFileChecker(tt.filename)
-			if got := fc.LoadToList(); !reflect.DeepEqual(got, tt.want) {
+			if got := fc.LoadToList(3); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("LoadToList() = %v, want %v", got, tt.want)
 			}
 		})
