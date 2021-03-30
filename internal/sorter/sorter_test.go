@@ -23,7 +23,6 @@ var sortItems2 = []SortItem{
 	{Seq: 4, Val: 90},
 	{Seq: 5, Val: 32},
 }
-
 var sortItems3 = []SortItem{
 	{Seq: 1, Val: 2222},
 	{Seq: 2, Val: 333333},
@@ -123,6 +122,49 @@ func TestSorter_InsertionSort(t *testing.T) {
 		})
 	}
 }
+
+// func TestSorter_ShellSort(t *testing.T) {
+// 	items1 := make([]SortItem, len(sortItems1))
+// 	items2 := make([]SortItem, len(sortItems2))
+// 	copy(items1, sortItems1)
+// 	copy(items2, sortItems2)
+//
+// 	testCases := []struct {
+// 		name           string
+// 		list           []SortItem
+// 		want           bool
+// 		wantedIsSorted bool
+// 		wantedIsASC    bool
+// 	}{
+// 		{
+// 			name:           "case1:",
+// 			list:           items1,
+// 			wantedIsSorted: true,
+// 			wantedIsASC:    true,
+// 		},
+// 		{
+// 			name:           "case2: itemsSimple",
+// 			list:           items2,
+// 			wantedIsSorted: true,
+// 			wantedIsASC:    true,
+// 		},
+// 	}
+// 	for _, testCase := range testCases {
+// 		t.Run(testCase.name, func(t *testing.T) {
+// 			s := &Sorter{
+// 				items: testCase.list,
+// 			}
+// 			s.InsertionSort(testCase.wantedIsASC)
+// 			gotIsSorted, gotIsASC := s.Check()
+// 			if !gotIsSorted {
+// 				t.Errorf("InsertionSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+// 			}
+// 			if gotIsASC != testCase.wantedIsASC {
+// 				t.Errorf("InsertionSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+// 			}
+// 		})
+// 	}
+// }
 
 func TestSorter_check(t *testing.T) {
 	tests := []struct {

@@ -1,5 +1,7 @@
 package sorter
 
+import "fmt"
+
 type SortItem struct {
 	Seq int
 	Val int
@@ -49,29 +51,19 @@ func (s *Sorter) shouldSwap(isASC bool, item1 SortItem, item2 SortItem) bool {
 
 // 插入排序
 func (s *Sorter) InsertionSort(isASC bool) {
-	for i := 1; i < len(s.items); i++ {
-		for j := i - 1; j >= 0; j-- {
-			shouldSwap := s.shouldSwap(isASC, s.items[j], s.items[i])
-			if shouldSwap && j != 0 {
+	fmt.Println(s.items)
+	for outIndex := 1; outIndex < len(s.items); outIndex++ {
+		temp := s.items[outIndex]                   // 用来暂存外层循环的一个值，
+		internalIndex := outIndex - 1               // 初始化内循环的起始位置，为当前位置的前一个值
+		for ; internalIndex >= 0; internalIndex-- { // 内循环，用来跟暂存的值比较，并且移动位置
+			shouldSwap := s.shouldSwap(isASC, s.items[internalIndex], temp) // 内循环值跟temp比较，判断是否到了temp应该的位置
+			if shouldSwap {                                                 // 不是temp的位置，将内循环的值向后移动一个位置
+				s.items[internalIndex+1] = s.items[internalIndex]
 				continue
 			}
-
-			var index int
-			if shouldSwap && j == 0 {
-				index = 0
-			}
-
-			if !shouldSwap {
-				index = j + 1
-			}
-
-			t := s.items[i]
-			for k := i; k > index; k-- {
-				s.items[k] = s.items[k-1]
-			}
-			s.items[index] = t
-			break
+			break // 到了合适的位置 跳出循环
 		}
+		s.items[internalIndex+1] = temp // 将temp复制给该位置的值。
 	}
 }
 
