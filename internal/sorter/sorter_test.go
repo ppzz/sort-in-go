@@ -1,6 +1,7 @@
 package sorter
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -258,6 +259,49 @@ func TestSorter_QuickSort(t *testing.T) {
 	}
 }
 
+func TestSorter_MergeSort(t *testing.T) {
+	items1 := make([]SortItem, len(sortItems1))
+	items2 := make([]SortItem, len(sortItems2))
+	copy(items1, sortItems1)
+	copy(items2, sortItems2)
+
+	testCases := []struct {
+		name           string
+		list           []SortItem
+		want           bool
+		wantedIsSorted bool
+		wantedIsASC    bool
+	}{
+		{
+			name:           "case1:",
+			list:           items1,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+		{
+			name:           "case2: itemsSimple",
+			list:           items2,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := &Sorter{
+				items: testCase.list,
+			}
+			s.MergeSort(testCase.wantedIsASC)
+			gotIsSorted, gotIsASC := s.Check()
+			if !gotIsSorted {
+				t.Errorf("MergeSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+			}
+			if gotIsASC != testCase.wantedIsASC {
+				t.Errorf("MergeSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+			}
+		})
+	}
+}
+
 func TestSorter_check(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -398,10 +442,104 @@ func TestSorter_shouldSwap(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			s := NewSorter([]SortItem{})
-			got := s.shouldSwap(testCase.args.isASC, testCase.args.item1, testCase.args.item2)
+			got := shouldSwap(testCase.args.isASC, testCase.args.item1, testCase.args.item2)
 			if got != testCase.want {
 				t.Errorf("shouldSwap() = %v, want %v", got, testCase.want)
+			}
+		})
+	}
+}
+
+func Test_mergeItemsList(t *testing.T) {
+	type args struct {
+		isASC      bool
+		sortItemsA []SortItem
+		sortItemsB []SortItem
+	}
+	testCases := []struct {
+		name string
+		args args
+		want []SortItem
+	}{
+		{
+			name: "case1:",
+			args: args{
+				isASC: true,
+				sortItemsA: []SortItem{
+					{Seq: 1, Val: 10},
+					{Seq: 2, Val: 21},
+					{Seq: 3, Val: 37},
+					{Seq: 4, Val: 58},
+					{Seq: 5, Val: 78},
+					{Seq: 6, Val: 90},
+				},
+				sortItemsB: []SortItem{
+					{Seq: 1, Val: 9},
+					{Seq: 2, Val: 20},
+					{Seq: 3, Val: 32},
+					{Seq: 4, Val: 38},
+					{Seq: 5, Val: 73},
+					{Seq: 6, Val: 83},
+				},
+			},
+			want: []SortItem{
+				{Seq: 1, Val: 9},
+				{Seq: 1, Val: 10},
+				{Seq: 2, Val: 20},
+				{Seq: 2, Val: 21},
+				{Seq: 3, Val: 32},
+				{Seq: 3, Val: 37},
+				{Seq: 4, Val: 38},
+				{Seq: 4, Val: 58},
+				{Seq: 5, Val: 73},
+				{Seq: 5, Val: 78},
+				{Seq: 6, Val: 83},
+				{Seq: 6, Val: 90},
+			},
+		},
+		{
+			name: "case2:",
+			args: args{
+				isASC: true,
+				sortItemsA: []SortItem{
+					{Seq: 1, Val: 9},
+					{Seq: 1, Val: 10},
+					{Seq: 2, Val: 20},
+					{Seq: 2, Val: 21},
+					{Seq: 3, Val: 32},
+					{Seq: 4, Val: 58},
+					{Seq: 6, Val: 83},
+				},
+				sortItemsB: []SortItem{
+					{Seq: 3, Val: 37},
+					{Seq: 4, Val: 38},
+					{Seq: 5, Val: 73},
+					{Seq: 5, Val: 78},
+					{Seq: 6, Val: 90},
+				},
+			},
+			want: []SortItem{
+				{Seq: 1, Val: 9},
+				{Seq: 1, Val: 10},
+				{Seq: 2, Val: 20},
+				{Seq: 2, Val: 21},
+				{Seq: 3, Val: 32},
+				{Seq: 3, Val: 37},
+				{Seq: 4, Val: 38},
+				{Seq: 4, Val: 58},
+				{Seq: 5, Val: 73},
+				{Seq: 5, Val: 78},
+				{Seq: 6, Val: 83},
+				{Seq: 6, Val: 90},
+			},
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			got := mergeItemsList(testCase.args.isASC, testCase.args.sortItemsA, testCase.args.sortItemsB)
+
+			if !reflect.DeepEqual(got, testCase.want) {
+				t.Errorf("mergeItemsList() = %v, want %v", got, testCase.want)
 			}
 		})
 	}

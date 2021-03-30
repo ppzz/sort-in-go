@@ -25,9 +25,10 @@ func MultiSort() {
 	NumCount := viper.GetInt("randomFile.numCount")
 	AssetRoot := viper.GetString("assetRoot")
 	filename := fmt.Sprintf("int-%s.txt", strconv.Itoa(NumCount))
-	absFilename := path.Join(AssetRoot, filename)        // 文件名
-	nameList := []string{"bubble", "insertion", "shell"} // 现有的算法列表
-	ch := make(chan ResultInfo, len(nameList))           // 用于 goroutine 返回结果
+	absFilename := path.Join(AssetRoot, filename) // 文件名
+	// nameList := []string{"bubble", "insertion", "shell", "quick"} // 现有的算法列表
+	nameList := []string{"shell", "quick", "merge"} // 现有的算法列表
+	ch := make(chan ResultInfo, len(nameList))      // 用于 goroutine 返回结果
 
 	// 读入文件
 	items := getList(absFilename)
@@ -59,6 +60,8 @@ func startOneSort(name string, items []sorter.SortItem, isASC bool, ch chan Resu
 		s.InsertionSort(isASC)
 	case "shell":
 		s.ShellSort(isASC)
+	case "quick":
+		s.QuickSort(isASC)
 	default:
 		log.Fatal("name not found:", name)
 	}

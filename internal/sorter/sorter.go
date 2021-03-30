@@ -39,7 +39,7 @@ func NewSorter(items []SortItem) *Sorter {
 func (s *Sorter) BubbleSort(isASC bool) {
 	for i := 0; i < len(s.items); i++ {
 		for j := i + 1; j < len(s.items); j++ {
-			if s.shouldSwap(isASC, s.items[i], s.items[j]) {
+			if shouldSwap(isASC, s.items[i], s.items[j]) {
 				var t = s.items[i]
 				s.items[i] = s.items[j]
 				s.items[j] = t
@@ -48,7 +48,7 @@ func (s *Sorter) BubbleSort(isASC bool) {
 	}
 }
 
-func (s *Sorter) shouldSwap(isASC bool, item1 SortItem, item2 SortItem) bool {
+func shouldSwap(isASC bool, item1 SortItem, item2 SortItem) bool {
 	return isASC && item1.great(&item2) || !isASC && item2.great(&item1)
 }
 
@@ -58,8 +58,8 @@ func (s *Sorter) InsertionSort(isASC bool) {
 		temp := s.items[outIndex]                   // 用来暂存外层循环的一个值，
 		internalIndex := outIndex - 1               // 初始化内循环的起始位置，为当前位置的前一个值
 		for ; internalIndex >= 0; internalIndex-- { // 内循环，用来跟暂存的值比较，并且移动位置
-			shouldSwap := s.shouldSwap(isASC, s.items[internalIndex], temp) // 内循环值跟temp比较，判断是否到了temp应该的位置
-			if shouldSwap {                                                 // 不是temp的位置，将内循环的值向后移动一个位置
+			shouldSwap := shouldSwap(isASC, s.items[internalIndex], temp) // 内循环值跟temp比较，判断是否到了temp应该的位置
+			if shouldSwap {                                               // 不是temp的位置，将内循环的值向后移动一个位置
 				s.items[internalIndex+1] = s.items[internalIndex]
 				continue
 			}
@@ -78,8 +78,8 @@ func (s *Sorter) ShellSort(isASC bool) {
 				temp := s.items[outIndex]                         // 用来暂存外层循环的一个值，
 				internalIndex := outIndex - step                  // 初始化内循环的起始位置，为当前位置的前一个值
 				for ; internalIndex >= 0; internalIndex -= step { // 内循环，用来跟暂存的值比较，并且移动位置
-					shouldSwap := s.shouldSwap(isASC, s.items[internalIndex], temp) // 内循环值跟temp比较，判断是否到了temp应该的位置
-					if shouldSwap {                                                 // 不是temp的位置，将内循环的值向后移动一个位置
+					shouldSwap := shouldSwap(isASC, s.items[internalIndex], temp) // 内循环值跟temp比较，判断是否到了temp应该的位置
+					if shouldSwap {                                               // 不是temp的位置，将内循环的值向后移动一个位置
 						s.items[internalIndex+step] = s.items[internalIndex]
 						continue
 					}
@@ -121,7 +121,7 @@ func (s *Sorter) SelectionSort(isASC bool) {
 	for outIndex := 0; outIndex < count; outIndex++ {
 		currentMinIndex := outIndex
 		for internalIndex := outIndex + 1; internalIndex < count; internalIndex++ {
-			shouldSwap := s.shouldSwap(isASC, s.items[currentMinIndex], s.items[internalIndex])
+			shouldSwap := shouldSwap(isASC, s.items[currentMinIndex], s.items[internalIndex])
 			if shouldSwap {
 				currentMinIndex = internalIndex
 			}
@@ -149,13 +149,13 @@ func (s *Sorter) quickSortRecursive(isASC bool, startIndex int, endIndex int) {
 	midIndex := endIndex // 选定的middle值的index
 	for {
 		for { // 从左查找比middle值大的元素的下标
-			if leftIndex >= rightIndex || s.shouldSwap(isASC, s.items[leftIndex], s.items[endIndex]) {
+			if leftIndex >= rightIndex || shouldSwap(isASC, s.items[leftIndex], s.items[endIndex]) {
 				break
 			}
 			leftIndex++
 		}
 		for { // 从右查找比middle值 小的元素的下表
-			if leftIndex >= rightIndex || s.shouldSwap(isASC, s.items[endIndex], s.items[rightIndex]) {
+			if leftIndex >= rightIndex || shouldSwap(isASC, s.items[endIndex], s.items[rightIndex]) {
 				break
 			}
 			rightIndex--
@@ -165,7 +165,7 @@ func (s *Sorter) quickSortRecursive(isASC bool, startIndex int, endIndex int) {
 		}
 		s.swap(leftIndex, rightIndex) // 交换元素
 	}
-	if s.shouldSwap(isASC, s.items[leftIndex], s.items[midIndex]) { // 此时left应该等于right
+	if shouldSwap(isASC, s.items[leftIndex], s.items[midIndex]) { // 此时left应该等于right
 		s.swap(leftIndex, midIndex)
 		midIndex = leftIndex
 	}
@@ -180,4 +180,56 @@ func (s *Sorter) swap(index int, index2 int) {
 	temp := s.items[index]
 	s.items[index] = s.items[index2]
 	s.items[index2] = temp
+}
+
+func (s *Sorter) MergeSort(isASC bool) {
+	start := 0
+	end := len(s.items) - 1
+	s.items = s.mergeSortRecursive(isASC, start, end)
+}
+
+func (s *Sorter) mergeSortRecursive(isASC bool, start int, end int) []SortItem {
+	if start > end {
+		return []SortItem{}
+	}
+	if start == end {
+		return []SortItem{s.items[start]}
+	}
+
+	midIndex := (start + end) / 2
+	sortItemsA := s.mergeSortRecursive(isASC, start, midIndex)
+	sortItemsB := s.mergeSortRecursive(isASC, midIndex+1, end)
+	return mergeItemsList(isASC, sortItemsA, sortItemsB)
+}
+
+func mergeItemsList(isASC bool, sortItemsA, sortItemsB []SortItem) []SortItem {
+	items := make([]SortItem, len(sortItemsA)+len(sortItemsB))
+	indexA, indexB, indexItems := 0, 0, 0
+	for {
+		if indexA >= len(sortItemsA) && indexB >= len(sortItemsB) {
+			break
+		}
+		if indexA >= len(sortItemsA) {
+			items[indexItems] = sortItemsB[indexB]
+			indexB++
+			indexItems++
+			continue
+		}
+		if indexB >= len(sortItemsB) {
+			items[indexItems] = sortItemsA[indexA]
+			indexA++
+			indexItems++
+			continue
+		}
+		if shouldSwap(isASC, sortItemsA[indexA], sortItemsB[indexB]) {
+			items[indexItems] = sortItemsB[indexB]
+			indexB++
+			indexItems++
+			continue
+		}
+		items[indexItems] = sortItemsA[indexA]
+		indexA++
+		indexItems++
+	}
+	return items
 }
