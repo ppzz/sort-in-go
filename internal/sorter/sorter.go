@@ -1,6 +1,7 @@
 package sorter
 
 import (
+	"log"
 	"strconv"
 )
 
@@ -129,4 +130,54 @@ func (s *Sorter) SelectionSort(isASC bool) {
 		s.items[currentMinIndex] = s.items[outIndex]
 		s.items[outIndex] = temp
 	}
+}
+
+func (s *Sorter) QuickSort(isASC bool) {
+	count := len(s.items)
+
+	s.quickSortRecursive(isASC, 0, count-1)
+}
+
+func (s *Sorter) quickSortRecursive(isASC bool, startIndex int, endIndex int) {
+	if startIndex >= endIndex {
+		return
+	}
+
+	leftIndex := startIndex
+	rightIndex := endIndex - 1
+
+	midIndex := endIndex // 选定的middle值的index
+	for {
+		for { // 从左查找比middle值大的元素的下标
+			if leftIndex >= rightIndex || s.shouldSwap(isASC, s.items[leftIndex], s.items[endIndex]) {
+				break
+			}
+			leftIndex++
+		}
+		for { // 从右查找比middle值 小的元素的下表
+			if leftIndex >= rightIndex || s.shouldSwap(isASC, s.items[endIndex], s.items[rightIndex]) {
+				break
+			}
+			rightIndex--
+		}
+		if leftIndex >= rightIndex { // 如果两个下表相遇，跳出
+			break
+		}
+		s.swap(leftIndex, rightIndex) // 交换元素
+	}
+	if s.shouldSwap(isASC, s.items[leftIndex], s.items[midIndex]) { // 此时left应该等于right
+		s.swap(leftIndex, midIndex)
+		midIndex = leftIndex
+	}
+	s.quickSortRecursive(isASC, startIndex, midIndex-1)
+	s.quickSortRecursive(isASC, midIndex+1, endIndex)
+}
+
+func (s *Sorter) swap(index int, index2 int) {
+	if index >= len(s.items) || index < 0 || index2 >= len(s.items) || index2 < 0 {
+		log.Fatal("swap: index error:", index, index2)
+	}
+	temp := s.items[index]
+	s.items[index] = s.items[index2]
+	s.items[index2] = temp
 }

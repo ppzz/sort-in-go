@@ -215,6 +215,49 @@ func TestSorter_SelectionSort(t *testing.T) {
 	}
 }
 
+func TestSorter_QuickSort(t *testing.T) {
+	items1 := make([]SortItem, len(sortItems1))
+	items2 := make([]SortItem, len(sortItems2))
+	copy(items1, sortItems1)
+	copy(items2, sortItems2)
+
+	testCases := []struct {
+		name           string
+		list           []SortItem
+		want           bool
+		wantedIsSorted bool
+		wantedIsASC    bool
+	}{
+		{
+			name:           "case1:",
+			list:           items1,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+		{
+			name:           "case2: itemsSimple",
+			list:           items2,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := &Sorter{
+				items: testCase.list,
+			}
+			s.QuickSort(testCase.wantedIsASC)
+			gotIsSorted, gotIsASC := s.Check()
+			if !gotIsSorted {
+				t.Errorf("QuickSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+			}
+			if gotIsASC != testCase.wantedIsASC {
+				t.Errorf("QuickSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+			}
+		})
+	}
+}
+
 func TestSorter_check(t *testing.T) {
 	tests := []struct {
 		name          string
