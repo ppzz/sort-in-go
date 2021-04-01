@@ -24,8 +24,8 @@ func MultiSort() {
 	// 准备一些变量
 	NumCount := viper.GetInt("randomFile.numCount")
 	// nameList := []string{"bubble", "insertion", "shell", "quick"} // 现有的算法列表
-	nameList := []string{"shell", "quick", "merge"} // 现有的算法列表
-	ch := make(chan ResultInfo, len(nameList))      // 用于 goroutine 返回结果
+	nameList := []string{"shell", "quick", "merge", "heap"} // 现有的算法列表
+	ch := make(chan ResultInfo, len(nameList))              // 用于 goroutine 返回结果
 
 	items := genItems(NumCount)
 	itemsList := cloneList(items, len(nameList)) // 克隆多份给goroutine使用
@@ -74,6 +74,8 @@ func startOneSort(name string, items []sorter.SortItem, isASC bool, ch chan Resu
 		s.QuickSort(isASC)
 	case "merge":
 		s.MergeSort(isASC)
+	case "heap":
+		s.HeapSort(isASC)
 	default:
 		log.Fatal("name not found:", name)
 	}

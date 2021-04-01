@@ -202,6 +202,49 @@ func (s *Sorter) mergeSortRecursive(isASC bool, start int, end int) []SortItem {
 	return mergeItemsList(isASC, sortItemsA, sortItemsB)
 }
 
+func (s *Sorter) HeapSort(isASC bool) {
+	// 数组存放堆的结构，左节点： 2i+1，右节点：2i+2
+	endIndex := len(s.items)
+	for index := endIndex - 1; index >= 0; index -= 2 {
+		position := (index - 1) / 2
+		s.heapBuildRecursive(!isASC, position, endIndex)
+	}
+
+	for endIndex > 0 {
+		endIndex -= 1
+		s.swap(endIndex, 0)
+		s.heapBuildRecursive(!isASC, 0, endIndex)
+	}
+}
+
+func (s *Sorter) heapGetFirstSubNodeIndex(isASC bool, position int, endIndex int) int {
+	leftIndex := 2*position + 1
+	rightIndex := 2*position + 2
+	first := position
+
+	if leftIndex >= endIndex { // 不存在子节点，返回本身
+		return first
+	}
+	first = leftIndex
+	if rightIndex >= endIndex { // 不存在右节点时,返回左节点的值
+		return first
+	}
+
+	if shouldSwap(isASC, s.items[leftIndex], s.items[rightIndex]) {
+		first = rightIndex
+	}
+	return first
+}
+
+func (s *Sorter) heapBuildRecursive(isASC bool, position int, endIndex int) {
+	subIndex := s.heapGetFirstSubNodeIndex(isASC, position, endIndex)
+	shouldSwap := shouldSwap(isASC, s.items[position], s.items[subIndex])
+	if shouldSwap {
+		s.swap(position, subIndex)
+		s.heapBuildRecursive(isASC, subIndex, endIndex)
+	}
+}
+
 func mergeItemsList(isASC bool, sortItemsA, sortItemsB []SortItem) []SortItem {
 	items := make([]SortItem, len(sortItemsA)+len(sortItemsB))
 	indexA, indexB, indexItems := 0, 0, 0

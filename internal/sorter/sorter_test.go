@@ -544,3 +544,123 @@ func Test_mergeItemsList(t *testing.T) {
 		})
 	}
 }
+
+func TestSorter_HeapSort(t *testing.T) {
+	items1 := make([]SortItem, len(sortItems1))
+	items2 := make([]SortItem, len(sortItems2))
+	copy(items1, sortItems1)
+	copy(items2, sortItems2)
+
+	testCases := []struct {
+		name           string
+		items          []SortItem
+		isASC          bool
+		position       int
+		wantedIsSorted bool
+		wantedIsASC    bool
+	}{
+		{
+			name: "case1:",
+			items: []SortItem{
+				{Seq: 1, Val: 1},
+				{Seq: 2, Val: 2},
+				{Seq: 3, Val: 3},
+			},
+			isASC:          false,
+			position:       0,
+			wantedIsSorted: true,
+			wantedIsASC:    false,
+		},
+		{
+			name: "case2:",
+			items: []SortItem{
+				{Seq: 1, Val: 1},
+				{Seq: 2, Val: 2},
+				{Seq: 3, Val: 3},
+				{Seq: 4, Val: 4},
+				{Seq: 5, Val: 5},
+				{Seq: 6, Val: 6},
+				{Seq: 7, Val: 7},
+			},
+			isASC:          false,
+			wantedIsSorted: true,
+			wantedIsASC:    false,
+		},
+		{
+			name:           "case3:",
+			items:          items1,
+			isASC:          true,
+			wantedIsSorted: true,
+			wantedIsASC:    true,
+		},
+		{
+			name:           "case4:",
+			items:          items2,
+			isASC:          false,
+			wantedIsSorted: true,
+			wantedIsASC:    false,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := &Sorter{
+				items: testCase.items,
+			}
+			s.HeapSort(testCase.isASC)
+			gotIsSorted, gotIsASC := s.Check()
+			if !gotIsSorted {
+				t.Errorf("HeapSort() gotIsSorted = %v, wantedIsSorted %v", gotIsSorted, testCase.wantedIsSorted)
+			}
+			if gotIsASC != testCase.wantedIsASC {
+				t.Errorf("HeapSort() gotIsASC = %v, wantedIsASC %v", gotIsSorted, testCase.wantedIsASC)
+			}
+		})
+	}
+}
+
+func TestSorter_heapGetFirstSubNodeIndex(t *testing.T) {
+	testCases := []struct {
+		name     string
+		items    []SortItem
+		isASC    bool
+		position int
+		want     int
+	}{
+		{
+			name: "case1",
+			items: []SortItem{
+				{Seq: 1, Val: 1},
+				{Seq: 2, Val: 2},
+				{Seq: 3, Val: 3},
+			},
+			isASC:    false,
+			position: 0,
+			want:     2,
+		},
+		{
+			name: "case2",
+			items: []SortItem{
+				{Seq: 1, Val: 1},
+				{Seq: 2, Val: 2},
+				{Seq: 3, Val: 3},
+				{Seq: 4, Val: 5},
+				{Seq: 5, Val: 4},
+				{Seq: 6, Val: 3},
+			},
+			isASC:    false,
+			position: 1,
+			want:     3,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			s := &Sorter{
+				items: testCase.items,
+			}
+			got := s.heapGetFirstSubNodeIndex(testCase.isASC, testCase.position, len(s.items))
+			if got != testCase.want {
+				t.Errorf("heapGetFirstSubNodeIndex() = %v, want %v", got, testCase.want)
+			}
+		})
+	}
+}
