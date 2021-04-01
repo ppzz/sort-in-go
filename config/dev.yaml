@@ -1,3 +1,8 @@
 randomFile:
-  numCount: 1000000
-assetRoot: asset/
+  numCount: 1000000 # 排序时产生的随机数个数
+assetRoot: asset/ # 输出随机数文件时的路径
+algos:  # "bubble", "insertion", "shell", "quick", "merge", "heap", 其中前两种较慢不测
+  - shell
+  - quick
+  - merge
+  - heap

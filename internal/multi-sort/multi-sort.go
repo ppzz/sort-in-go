@@ -23,9 +23,8 @@ func MultiSort() {
 
 	// 准备一些变量
 	NumCount := viper.GetInt("randomFile.numCount")
-	// nameList := []string{"bubble", "insertion", "shell", "quick"} // 现有的算法列表
-	nameList := []string{"shell", "quick", "merge", "heap"} // 现有的算法列表
-	ch := make(chan ResultInfo, len(nameList))              // 用于 goroutine 返回结果
+	nameList := viper.GetStringSlice("algos")
+	ch := make(chan ResultInfo, len(nameList)) // 用于 goroutine 返回结果
 
 	items := genItems(NumCount)
 	itemsList := cloneList(items, len(nameList)) // 克隆多份给goroutine使用
@@ -41,7 +40,7 @@ func MultiSort() {
 
 	// 打印出每个协程的返回数据
 	for i := range ch {
-		fmt.Printf("name: %s\t, time: %d, mem:%d, cpu: %d, isOrdered: %v, isASC: %v\n", i.name, i.time, i.mem, i.cpu, i.isOrdered, i.isASC)
+		fmt.Printf("    name: %s\t, time: %d, isOrdered: %v, isASC: %v\n", i.name, i.time, i.isOrdered, i.isASC)
 	}
 }
 

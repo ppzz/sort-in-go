@@ -4,12 +4,18 @@
 
 * 生成百万个整数的文件。
 * 验证整数文件是否有序。
+* 一些算法："bubble", "insertion", "shell", "quick", "merge", "heap"
+* 生成指定数量的数，并排序，之后输出各种算法的对比结果
 
 
-go的笔记
 
+运行 go run cmd/??/**.go
 
-* 关闭channel之后还可以读取已有的数据，但是不能够写入新数据
-* 引用类型 & 值类型
-  * 引用类型: number类, string, bool, struct
-  * 值类型: slice, maps, channel, pointer, function
+eg:
+
+```bash
+// 运行各种排序算法并输出耗时
+go run cmd/sort/sort.go
+```
+
+配置信息: config/dev.yaml
